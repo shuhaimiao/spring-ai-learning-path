@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example.learningpath</groupId>
+    <artifactId>spring-ai-learning-path-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Spring AI Learning Path Projects</name>
+    <description>Parent POM for all projects in the Spring AI Learning Path</description>
+
+    <modules>
+        <module>my-first-spring-ai</module>
+        <!-- Other projects can be added here -->
+    </modules>
+
+    <properties>
+        <!-- Define common properties for all sub-projects if needed -->
+        <!-- For example, Spring Boot version, Java version -->
+        <!-- <java.version>17</java.version> -->
+        <!-- <spring-boot.version>3.3.0</spring-boot.version> -->
+    </properties>
+
+    <!-- Common dependencyManagement, pluginManagement, repositories can be added here -->
+
+</project> 
