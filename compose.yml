@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag_postgres
+    ports:
+      - "127.0.0.1:5432:5432" # Restrict access to localhost
+    environment:
+      POSTGRES_DB: vectordb
+      POSTGRES_USER: testuser
+      # IMPORTANT: Change this password for any non-local or production deployment!
+      POSTGRES_PASSWORD: testpwd
+    volumes:
+      - postgres_data_rag:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d vectordb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest # Consider a specific version if issues arise, e.g., 0.1.41+ for Qwen2/3
+    container_name: rag_ollama
+    ports:
+      - "127.0.0.1:11434:11434" # Restrict access to localhost
+    # IMPORTANT: If exposing Ollama to the network, use a reverse proxy with authentication.
+    volumes:
+      - ollama_data_rag:/root/.ollama
+    # GPU Access (Uncomment and adjust if you have a compatible NVIDIA GPU)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1 # or 'all'
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 60s # Ollama can take a while to start and download models
+      timeout: 30s
+      retries: 5
+    restart: unless-stopped
+    # tty: true # Useful for keeping Ollama running and for interactive model pulling if needed
+
+volumes:
+  postgres_data_rag:
+    driver: local
+  ollama_data_rag:
+    driver: local
