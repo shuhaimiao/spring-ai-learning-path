@@ -144,7 +144,7 @@ Be helpful, friendly, and provide detailed information about each dog's characte
         // Reverted to simple call, assuming String response for now
         String response = ai
                 .prompt()
-                .user(promptWithContext) 
+                .user(promptWithContext)
                 .call()
                 .content(); // Assuming content() returns String when no functions are explicitly handled
         long endTime = System.currentTimeMillis();
