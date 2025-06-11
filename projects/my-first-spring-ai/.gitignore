@@ -1,0 +1,28 @@
+# Environment variables (contains sensitive API keys)
+.env
+.env.local
+.env.production
+
+# Maven build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Application specific
+application-local.properties 

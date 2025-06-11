@@ -1,72 +1,164 @@
-# My First Spring AI Project
+# Spring AI Learning Path - My First Spring AI Project
 
-This project demonstrates a Spring AI application with two modules: `adoptions` and `scheduler`.
-It is structured as a multi-module Maven project.
-
-## Overview
-
-The `my-first-spring-ai` project consists of two main Spring Boot applications:
-
-1.  **`adoptions`**: This application is the primary service, providing an AI-powered assistant for a dog adoption agency named "Pooch Palace". It utilizes Spring AI, Spring Data, and a VectorStore to offer information about available dogs and assist with the adoption process. It exposes a REST endpoint at `/{user}/assistant` for users to interact with the AI assistant. This application also integrates with an MCP (Model Control Protocol) service, which is the `scheduler` application, for handling specific tool calls or scheduled operations.
-
-2.  **`scheduler`**: This application functions as an MCP service. It is designed to handle requests from the `adoptions` application, likely for performing scheduled tasks or executing tool-specific functions that are offloaded from the main `adoptions` service.
+This project demonstrates Spring AI capabilities with PostgresML for embeddings and vector search.
 
 ## Prerequisites
 
-- Java 17 or later
-- Maven
+- Docker and Docker Compose
+- Java 17+ 
+- Maven 3.6+
 
-## How to Run
+## Getting Started
 
-This is a multi-module Maven project. You can build and run the applications from the root directory (`projects/my-first-spring-ai`).
+### 1. Start the Database
 
-1.  **Build the entire project:**
-    Navigate to the root directory (`projects/my-first-spring-ai`) and run:
-    ```bash
-    mvn clean install
-    ```
+```bash
+# Navigate to the project directory
+cd projects/my-first-spring-ai
 
-2.  **Run the `scheduler` application:**
-    After building, you can run the `scheduler` application. Open a new terminal, navigate to the `scheduler` module directory, and use the Spring Boot Maven plugin:
-    ```bash
-    cd scheduler
-    mvn spring-boot:run
-    ```
-    Alternatively, you can run the packaged JAR (after `mvn clean install` from the root):
-    ```bash
-    java -jar target/scheduler-0.0.1-SNAPSHOT.jar
-    ```
-    This application will typically start on port 8081.
+# Start PostgreSQL with PostgresML
+docker-compose up -d
 
-3.  **Run the `adoptions` application:**
-    Similarly, open another new terminal, navigate to the `adoptions` module directory, and use the Spring Boot Maven plugin:
-    ```bash
-    # Make sure you are in the root project directory first, then navigate to adoptions
-    # cd ../adoptions  (if you were in scheduler directory)
-    # If you are in the root directory (projects/my-first-spring-ai):
-    cd adoptions
-    mvn spring-boot:run
-    ```
-    Alternatively, you can run the packaged JAR (after `mvn clean install` from the root):
-    ```bash
-    java -jar target/adoptions-0.0.1-SNAPSHOT.jar
-    ```
-    This application will typically start on port 8080.
+# Check if the database is running
+docker-compose ps
+```
 
-    **Order of Execution:** Ensure the `scheduler` application is running before starting the `adoptions` application, as `adoptions` depends on `scheduler` for MCP communication.
+### 2. Configure API Keys
 
-## Interacting with the Application
+Set your OpenAI API key as an environment variable:
 
-Once both applications are running (scheduler first, then adoptions), you can interact with the `adoptions` assistant by sending GET requests to:
+**Option A: Export in your shell**
+```bash
+export SPRING_AI_OPENAI_API_KEY=your_actual_openai_api_key_here
+```
 
-`http://localhost:8080/{user}/assistant?question=Your_question_here`
+**Option B: Create a .env file** (recommended for development)
+```bash
+# Copy the example file
+cp env.example .env
 
-Replace `{user}` with a user identifier (e.g., `testuser`) and `Your_question_here` with your query about dog adoptions.
+# Edit .env file and add your actual API key
+SPRING_AI_OPENAI_API_KEY=your_actual_openai_api_key_here
 
-For example:
-`http://localhost:8080/testuser/assistant?question=Do%20you%20have%20any%20labradors%3F`
+# The app will automatically load .env files on startup
+```
 
+**Option C: Set when running Maven**
+```bash
+SPRING_AI_OPENAI_API_KEY=your_key_here mvn spring-boot:run
+```
 
+Get your OpenAI API key from: https://platform.openai.com/api-keys
+
+### 3. Run the Applications
+
+#### Standard Setup (Local Testing)
+```bash
+# Run the Scheduler service (port 8081)
+cd scheduler
+mvn spring-boot:run
+
+# In another terminal, run the Adoptions service (port 8080)
+cd ../adoptions
+mvn spring-boot:run
+```
+
+#### MCP Setup with Ngrok (For OpenAI Function Calling)
+
+For OpenAI to call the scheduler service as a function, you need to expose it publicly:
+
+```bash
+# 1. Install and configure ngrok (see NGROK_SETUP.md for details)
+brew install ngrok/ngrok/ngrok
+ngrok config add-authtoken YOUR_AUTHTOKEN
+
+# 2. Start the scheduler service
+cd scheduler
+mvn spring-boot:run
+
+# 3. In another terminal, expose the scheduler publicly
+ngrok http 8081
+# Note the public URL (e.g., https://abc123.ngrok-free.app)
+
+# 4. In a third terminal, start adoptions with the ngrok URL
+cd ../adoptions
+mvn spring-boot:run -Dscheduler.url=https://abc123.ngrok-free.app
+```
+
+See `NGROK_SETUP.md` for complete ngrok installation and configuration instructions.
+
+## Services
+
+### Adoptions Service (Port 8080)
+- **Endpoint**: `GET /{user}/assistant?question={question}`
+- **Example**: `http://localhost:8080/john/assistant?question=What dogs are available?`
+
+### Scheduler Service (Port 8081)
+- **Health Check**: `GET /health`
+- **Schedule Appointment**: `POST /schedule`
+  ```json
+  {
+    "dogId": 1,
+    "dogName": "Buddy"
+  }
+  ```
+
+## Database Management
+
+```bash
+# Stop the database
+docker-compose down
+
+# Stop and remove all data (⚠️ destroys all data)
+docker-compose down -v
+
+# View database logs
+docker-compose logs postgresml
+
+# Connect to database directly
+docker exec -it spring-ai-postgresml psql -U myappuser -d postgresml
+```
+
+## Security Best Practices
+
+### API Key Management
+- ✅ **Never commit API keys** to version control
+- ✅ **Use environment variables** for sensitive configuration
+- ✅ **Keep .env files local** (they're in .gitignore)
+- ✅ **Rotate keys regularly** for production applications
+
+### Environment Files
+```bash
+# .env files are ignored by git for security
+echo ".env" >> .gitignore
+
+# Use env.example as a template
+cp env.example .env
+# Edit .env with your actual values
+```
+
+## Troubleshooting
+
+### Database Connection Issues
+1. Ensure Docker is running
+2. Check if port 5433 is available: `lsof -i :5433`
+3. Wait for database health check to pass: `docker-compose logs postgres`
+
+### Missing API Key
+Set your OpenAI API key as an environment variable:
+```bash
+export SPRING_AI_OPENAI_API_KEY=your_key_here
+```
+
+### Port Already in Use
+If you get "Port 8080 was already in use":
+```bash
+# Find and kill the process using port 8080
+lsof -ti:8080 | xargs kill -9
+
+# Or run on a different port
+mvn spring-boot:run -Dserver.port=8081
+```
 
 # Reference 
 

@@ -1,0 +1,64 @@
+openapi: 3.0.1
+info:
+  title: Scheduler API
+  description: API for scheduling dog adoption appointments.
+  version: v1.0.0
+servers:
+  - url: http://localhost:8081 # Assuming scheduler runs on port 8081
+    description: Local development server
+
+components:
+  schemas:
+    ScheduleRequest:
+      $ref: './schemas/ScheduleRequest.yaml'
+    ScheduleResponse:
+      $ref: './schemas/ScheduleResponse.yaml'
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+
+paths:
+  /schedule:
+    post:
+      summary: Schedule an adoption appointment
+      description: Schedule an appointment to meet a dog for adoption.
+      operationId: scheduleAppointment
+      tags:
+        - Scheduler
+      requestBody:
+        description: Dog ID and name for scheduling the appointment.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleRequest'
+      responses:
+        '200':
+          description: Appointment scheduled successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '400':
+          description: Invalid input provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse' # Reusing a common error schema
+                example:
+                  success: false
+                  message: "Invalid input: dogId is required."
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse' # Reusing a common error schema
+                example:
+                  success: false
+                  message: "Internal server error while scheduling appointment."

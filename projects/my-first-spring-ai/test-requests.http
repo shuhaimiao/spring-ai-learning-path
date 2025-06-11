@@ -1,0 +1,363 @@
+### Spring AI Adoptions - Test Requests
+
+###
+# Health check for Scheduler Service
+GET https://localhost:8081/health
+Accept: application/json
+
+###
+# Check Flyway migration status
+GET http://localhost:8080/admin/flyway-info
+Accept: text/plain
+
+###
+# List all dogs in database
+GET http://localhost:8080/dogs
+Accept: application/json
+
+###
+# Count dogs and vector store documents
+GET http://localhost:8080/dogs/count
+Accept: text/plain
+
+### === AI ASSISTANT TESTS ===
+
+###
+# Test adoptions assistant - general inquiry
+GET http://localhost:8080/john/assistant?question=What dogs are available for adoption?
+Accept: text/plain
+
+###
+# Test adoptions assistant - specific breed inquiry
+GET http://localhost:8080/john/assistant?question=Do you have any German Shepherd puppies?
+Accept: text/plain
+
+###
+# Test adoptions assistant - specific breed inquiry
+GET http://localhost:8080/john/assistant?question=Do you have any German Shepherd?
+Accept: text/plain
+
+###
+# Test adoptions assistant - location inquiry
+GET http://localhost:8080/mike/assistant?question=I live in New York City, what dogs do you recommend?
+Accept: text/plain
+
+###
+# Test adoptions assistant - size preference
+GET http://localhost:8080/lisa/assistant?question=I'm looking for a small dog that's good with children
+Accept: text/plain
+
+###
+# Test adoptions assistant - energy level inquiry
+GET http://localhost:8080/alex/assistant?question=I want an active dog for running and hiking
+Accept: text/plain
+
+###
+# Test adoptions assistant - compatibility inquiry
+GET http://localhost:8080/sarah/assistant?question=I have cats at home, which dogs would be compatible?
+Accept: text/plain
+
+###
+# Test adoptions assistant - budget inquiry
+GET http://localhost:8080/david/assistant?question=What dogs are available for under $300?
+Accept: text/plain
+
+### === MCP INTEGRATION TESTS ===
+### These test the AI assistant calling the scheduler service as a function
+
+###
+# MCP Test 1: Request to schedule appointment for specific dog
+GET http://localhost:8080/emma/assistant?question=I'm interested in Buddy. Can you schedule an appointment for me to meet him?
+Accept: text/plain
+
+###
+# MCP Test 2: Request to schedule appointment after dog inquiry
+GET http://localhost:8080/mike/assistant?question=Tell me about Luna, and if she sounds good, please schedule an appointment for me.
+Accept: text/plain
+
+###
+# MCP Test 3: Request to schedule appointment for dog good with kids
+GET http://localhost:8080/family/assistant?question=I need a dog that's good with children. Can you recommend one and schedule an appointment?
+Accept: text/plain
+
+###
+# MCP Test 4: Request to schedule appointment for specific dog ID
+GET http://localhost:8080/tom/assistant?question=I want to schedule an appointment to meet dog ID 3. Can you help me?
+Accept: text/plain
+
+###
+# MCP Test 5: Multiple scheduling requests in conversation
+GET http://localhost:8080/susan/assistant?question=Can you schedule appointments for both Buddy and Max? I want to meet both dogs.
+Accept: text/plain
+
+###
+# MCP Test 6: Schedule appointment with specific requirements
+GET http://localhost:8080/robert/assistant?question=I want a medium-sized dog good with other dogs. Please find one and schedule an appointment.
+Accept: text/plain
+
+###
+# MCP Test 7: Schedule appointment for NYC location
+GET http://localhost:8080/nyc-resident/assistant?question=I live in New York City. Find me a small dog and schedule an appointment at the NYC location.
+Accept: text/plain
+
+###
+# MCP Test 8: Error handling - request for non-existent dog
+GET http://localhost:8080/error-test/assistant?question=Please schedule an appointment for a dog named "NonExistent". 
+Accept: text/plain
+
+### === NGROK INTEGRATION TESTS ===
+### These test the scheduler service via public ngrok URL
+### Note: Replace YOUR_NGROK_URL with your actual ngrok URL
+
+###
+# Test ngrok health endpoint
+GET https://YOUR_NGROK_URL.ngrok-free.app/health
+Accept: application/json
+
+###
+# Test ngrok scheduling endpoint
+POST https://YOUR_NGROK_URL.ngrok-free.app/schedule
+Content-Type: application/json
+
+{
+  "dogId": 1,
+  "dogName": "Buddy"
+}
+
+###
+# MCP Test with ngrok URL - AI assistant calling public scheduler
+# Note: Set scheduler.url system property to your ngrok URL before running this
+GET http://localhost:8080/ngrok-test/assistant?question=I want to adopt Charlie. Please schedule an appointment for me.
+Accept: text/plain
+
+### === BASIC SCHEDULING TESTS ===
+
+###
+# Schedule adoption appointment - Test 1 (Buddy)
+POST https://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 1,
+  "dogName": "Buddy"
+}
+
+### Connect to Scheduler MCP Server (SSE)
+GET https://localhost:8081/mcp/v1/messages
+Accept: text/event-stream
+
+###
+# Schedule adoption appointment - Test 2 (Luna)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 2,
+  "dogName": "Luna"
+}
+
+###
+# Schedule adoption appointment - Test 3 (with string dogId)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": "3",
+  "dogName": "Max"
+}
+
+### === COMPREHENSIVE SCHEDULING TESTS ===
+
+###
+# Schedule with actual database dog ID 4 (Charlie)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 4,
+  "dogName": "Charlie"
+}
+
+###
+# Schedule with actual database dog ID 5 (Bella)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 5,
+  "dogName": "Bella"
+}
+
+###
+# Schedule with actual database dog ID 6 (Rocky)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 6,
+  "dogName": "Rocky"
+}
+
+###
+# Schedule with actual database dog ID 7 (Sophie)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 7,
+  "dogName": "Sophie"
+}
+
+###
+# Schedule with actual database dog ID 8 (Duke)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 8,
+  "dogName": "Duke"
+}
+
+### === EDGE CASE SCHEDULING TESTS ===
+
+###
+# Schedule adoption appointment - Edge case (missing dogName)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 4
+}
+
+###
+# Schedule adoption appointment - Edge case (missing dogId)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogName": "Charlie"
+}
+
+###
+# Schedule adoption appointment - Edge case (empty request body)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{}
+
+###
+# Schedule adoption appointment - Edge case (null values)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": null,
+  "dogName": null
+}
+
+###
+# Schedule adoption appointment - Edge case (invalid dogId type)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": "not-a-number",
+  "dogName": "TestDog"
+}
+
+###
+# Schedule adoption appointment - Edge case (negative dogId)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": -1,
+  "dogName": "TestDog"
+}
+
+###
+# Schedule adoption appointment - Edge case (very large dogId)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 999999,
+  "dogName": "NonExistentDog"
+}
+
+###
+# Schedule adoption appointment - Edge case (special characters in name)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 1,
+  "dogName": "Señor Wøøf-ington III"
+}
+
+### === WORKFLOW INTEGRATION TESTS ===
+### These test the complete workflow: inquire about dogs, then schedule appointments
+
+###
+# Step 1: Find dogs good with kids
+GET http://localhost:8080/family/assistant?question=Show me dogs that are good with children
+Accept: text/plain
+
+###
+# Step 2: Schedule appointment for a family-friendly dog (based on Step 1 results)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 2,
+  "dogName": "Luna",
+  "notes": "Family with children - confirmed good with kids"
+}
+
+###
+# Step 1: Find small dogs in NYC
+GET http://localhost:8080/nyc-resident/assistant?question=I live in New York City and want a small dog
+Accept: text/plain
+
+###
+# Step 2: Schedule appointment for small NYC dog
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 6,
+  "dogName": "Rocky",
+  "location": "New York City"
+}
+
+### === STRESS TESTING ===
+
+###
+# Multiple rapid scheduling requests (Test 1)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 1,
+  "dogName": "Buddy"
+}
+
+###
+# Multiple rapid scheduling requests (Test 2)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 2,
+  "dogName": "Luna"
+}
+
+###
+# Multiple rapid scheduling requests (Test 3)
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": 3,
+  "dogName": "Max"
+} 

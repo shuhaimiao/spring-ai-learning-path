@@ -1,2 +1,5 @@
+com/example/scheduler/api/model/ScheduleResponse.class
 com/example/scheduler/SchedulerApplication.class
-com/example/scheduler/DogAdoptionSchedulerController.class
+com/example/scheduler/api/controller/SchedulerApi.class
+com/example/scheduler/api/model/ScheduleRequest.class
+com/example/scheduler/SchedulerApiController.class

@@ -1,0 +1,42 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug using Hotswap Agent",
+      "request": "launch",
+      "javaExec": "/Users/smiao/.vaadin/jdk/jbrsdk-21.0.7-osx-aarch64-b992.24/Contents/Home/bin/java",
+      "mainClass": "com.example.my_weather_server.MyWeatherServerApplication",
+      "vmArgs": "-XX:+AllowEnhancedClassRedefinition -XX:+ClassUnloading -XX:HotswapAgent=fatjar"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-SchedulerApplication<scheduler>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.scheduler.SchedulerApplication",
+      "projectName": "scheduler",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-AdoptionsApplication<adoptions>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.adoptions.AdoptionsApplication",
+      "projectName": "adoptions",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-MyWeatherServerApplication<my-weather-server>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.my_weather_server.MyWeatherServerApplication",
+      "projectName": "my-weather-server",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

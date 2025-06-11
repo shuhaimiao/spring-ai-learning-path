@@ -13,6 +13,7 @@
 
     <modules>
         <module>my-first-spring-ai</module>
+        <module>my-weather-server</module>
         <!-- Other projects can be added here -->
     </modules>
 

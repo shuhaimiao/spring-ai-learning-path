@@ -1,0 +1,81 @@
+### Advanced Test Scenarios for Spring AI Adoptions
+
+###
+# Test URL encoding in questions
+GET http://localhost:8080/alex/assistant?question=What%20dogs%20are%20available%20in%20São%20Paulo%20or%20Mexico%20City?
+Accept: text/plain
+
+###
+# Test complex question with multiple criteria
+GET http://localhost:8080/emma/assistant?question=I need a medium-sized dog that's good with cats and doesn't shed much. I live in Tokyo.
+Accept: text/plain
+
+###
+# Test question about locations mentioned in system prompt
+GET http://localhost:8080/carlos/assistant?question=Which Pooch Palace locations are available?
+Accept: text/plain
+
+###
+# Test edge case - empty question
+GET http://localhost:8080/test/assistant?question=
+Accept: text/plain
+
+###
+# Test edge case - very long question
+GET http://localhost:8080/verbose/assistant?question=I am looking for a dog that would be perfect for my family which consists of two adults, three children aged 5, 8, and 12, and we also have a cat named Whiskers who is very friendly but can be territorial sometimes, and we live in a two-story house with a large backyard in Barcelona, Spain, and we prefer a dog that doesn't bark too much because we have close neighbors, and ideally the dog should be house-trained or easy to train, and we would like a medium to large sized dog that enjoys playing fetch and going on long walks?
+Accept: text/plain
+
+###
+# Test scheduler with invalid JSON
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": "invalid",
+  "dogName": "Test Dog",
+  "extraField": "should be ignored"
+}
+
+###
+# Test scheduler with empty body
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{}
+
+###
+# Test scheduler with null values
+POST http://localhost:8081/schedule
+Content-Type: application/json
+
+{
+  "dogId": null,
+  "dogName": null
+}
+
+###
+# Load test - Multiple rapid requests to adoptions service
+GET http://localhost:8080/user1/assistant?question=Tell me about available dogs
+Accept: text/plain
+
+###
+GET http://localhost:8080/user2/assistant?question=What breeds do you have?
+Accept: text/plain
+
+###
+GET http://localhost:8080/user3/assistant?question=Do you have puppies?
+Accept: text/plain
+
+###
+# Test different content types for scheduler
+POST http://localhost:8081/schedule
+Content-Type: application/x-www-form-urlencoded
+
+dogId=5&dogName=Rocky
+
+###
+# Test malformed request to scheduler
+POST http://localhost:8081/schedule
+Content-Type: text/plain
+
+This is not JSON 

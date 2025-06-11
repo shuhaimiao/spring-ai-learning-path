@@ -1,0 +1,22 @@
+# OpenAPI Generator Configuration for Spring Boot
+generatorName: spring
+inputSpec: api/openapi.yaml # Relative path to the OpenAPI specification
+outputDir: target/generated-sources/openapi/java # Output directory for generated code
+apiPackage: com.example.scheduler.api.controller # Package for the generated API interface(s)
+modelPackage: com.example.scheduler.api.model    # Package for the generated model (DTO) classes
+groupId: com.example
+artifactId: scheduler-api
+artifactVersion: v1.0.0 # Should match your API version
+
+configOptions:
+  interfaceOnly: true          # Generate only the API interface (e.g., DefaultApi.java)
+  useSpringBoot3: true         # Target Spring Boot 3.x
+  openApiNullable: false       # Avoids JsonNullable wrapper for simpler DTOs
+  serializableModel: true      # Adds Serializable interface to models
+  performBeanValidation: true  # Adds @Valid annotation for request body validation
+  useTags: false               # If true, uses tags for Api interface naming. False might use operationId or default.
+                               # With this false, and no specific operationId based naming convention, expect DefaultApi.
+  # Spring specific options
+  library: spring-boot         # Explicitly state spring-boot library, though 'spring' generator implies it.
+  # dateLibrary: java8         # For java.time classes (default for Spring Boot 3 usually)
+  # documentationProvider: springdoc # Uncomment if using springdoc-openapi for API docs page 

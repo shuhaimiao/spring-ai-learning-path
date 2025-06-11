@@ -1,0 +1,29 @@
+type: object
+properties:
+  success:
+    type: boolean
+    description: Indicates if the scheduling was successful.
+    example: true
+  appointmentTime:
+    type: string
+    format: date-time
+    description: The scheduled time for the appointment.
+    example: "2025-06-08T10:15:30.00Z"
+  appointmentId:
+    type: string
+    format: uuid
+    description: The unique identifier for the appointment.
+    example: "123e4567-e89b-12d3-a456-426614174000"
+  dogId:
+    type: integer
+    format: int32
+    description: The unique identifier of the dog.
+    example: 1
+  dogName:
+    type: string
+    description: The name of the dog for whom the appointment is scheduled.
+    example: "Buddy"
+  message:
+    type: string
+    description: A confirmation or status message.
+    example: "Appointment scheduled for Buddy on 2025-06-08T10:15:30.00Z" 
