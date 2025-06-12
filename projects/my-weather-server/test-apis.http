@@ -13,4 +13,12 @@ Content-Type: application/json
 
 {
   "state": "CA"
+}
+
+### Test GenAI Weather Forecast API
+POST http://localhost:8080/weather/chat/forecast
+Content-Type: application/json
+
+{
+  "query": "What is the weather look like in New York, NY?"
 } 
