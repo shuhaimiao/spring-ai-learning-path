@@ -2,6 +2,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "SourcingEmailCrafterApplication",
+      "request": "launch",
+      "mainClass": "com.example.sourcingemailcrafter.SourcingEmailCrafterApplication",
+      "projectName": "sourcing-email-crafter"
+    },
+    {
+      "type": "java",
       "name": "Debug using Hotswap Agent",
       "request": "launch",
       "javaExec": "/Users/smiao/.vaadin/jdk/jbrsdk-21.0.7-osx-aarch64-b992.24/Contents/Home/bin/java",
