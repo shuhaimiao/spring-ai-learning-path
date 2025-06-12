@@ -1,0 +1,16 @@
+### Test Weather Forecast API
+POST http://localhost:8080/weather/forecast
+Content-Type: application/json
+
+{
+  "latitude": 34.0522,
+  "longitude": -118.2437
+}
+
+### Test Weather Alerts API
+POST http://localhost:8080/weather/alerts
+Content-Type: application/json
+
+{
+  "state": "CA"
+} 

@@ -48,12 +48,14 @@ public class MyWeatherServerApplication {
 				}
 
 				//logger.info("User prompt: {}", userInput);
-				String response = chatClient.prompt()
+				Object response = chatClient.prompt()
 					.advisors(new LoggerAdvisor())
 					.user(userInput)
 					.tools(weatherService)
 					.call()
 					.content();
+				
+				logger.info("AI response: {}", response);
 			}
 		};
 	}
